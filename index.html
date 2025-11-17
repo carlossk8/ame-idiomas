@@ -1124,6 +1124,56 @@
         const SUPABASE_URL = 'https://ybwifidmijdfbgexsebf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlid2lmaWRtaWpkZmJnZXhzZWJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzOTAxNjAsImV4cCI6MjA3ODk2NjE2MH0.IdNQJpCMv0L9c46K4pRlDsRwCT6lTtBpy4-agXNcOec';
 
+        // Process OAuth callback when returning from Google
+        async function handleOAuthCallback() {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = hashParams.get('access_token');
+
+            if (accessToken) {
+                try {
+                    // Get user from Supabase
+                    const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'apikey': SUPABASE_ANON_KEY
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to get user');
+
+                    const user = await response.json();
+
+                    if (user) {
+                        // Save user data
+                        currentUser = {
+                            id: user.id,
+                            email: user.email,
+                            name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
+                            avatar: user.user_metadata?.avatar_url || user.user_metadata?.picture
+                        };
+
+                        // Save to localStorage
+                        localStorage.setItem('ame_user', JSON.stringify(currentUser));
+
+                        // Clean URL hash
+                        window.history.replaceState(null, null, window.location.pathname);
+
+                        // Show home screen
+                        showScreen('home');
+
+                        console.log('✅ Google OAuth login successful!');
+                    }
+                } catch (error) {
+                    console.error('OAuth error:', error);
+                    alert('Erro ao fazer login com Google. Tente novamente.');
+                    showScreen('auth');
+                }
+            }
+        }
+
+        // Call on page load
+        window.addEventListener('load', handleOAuthCallback);
+
         // Simple Supabase Client
         const supabase = {
             auth: {
@@ -1221,49 +1271,6 @@
                 }
             })
         };
-
-        // Process OAuth callback when returning from Google
-        async function handleOAuthCallback() {
-            const hashParams = new URLSearchParams(window.location.hash.substring(1));
-            const accessToken = hashParams.get('access_token');
-
-            if (accessToken) {
-                try {
-                    // Get user from Supabase
-                    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-
-                    if (error) throw error;
-
-                    if (user) {
-                        // Save user data
-                        currentUser = {
-                            id: user.id,
-                            email: user.email,
-                            name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
-                            avatar: user.user_metadata?.avatar_url || user.user_metadata?.picture
-                        };
-
-                        // Save to localStorage
-                        localStorage.setItem('ame_user', JSON.stringify(currentUser));
-
-                        // Clean URL hash
-                        window.history.replaceState(null, null, window.location.pathname);
-
-                        // Show home screen
-                        showScreen('home');
-
-                        console.log('✅ Google OAuth login successful!');
-                    }
-                } catch (error) {
-                    console.error('OAuth error:', error);
-                    alert('Erro ao fazer login com Google. Tente novamente.');
-                    showScreen('auth');
-                }
-            }
-        }
-
-        // Call on page load
-        handleOAuthCallback();
 
         // Auth functions
         function showLogin() {
