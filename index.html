@@ -1222,6 +1222,49 @@
             })
         };
 
+        // Process OAuth callback when returning from Google
+        async function handleOAuthCallback() {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = hashParams.get('access_token');
+
+            if (accessToken) {
+                try {
+                    // Get user from Supabase
+                    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
+
+                    if (error) throw error;
+
+                    if (user) {
+                        // Save user data
+                        currentUser = {
+                            id: user.id,
+                            email: user.email,
+                            name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
+                            avatar: user.user_metadata?.avatar_url || user.user_metadata?.picture
+                        };
+
+                        // Save to localStorage
+                        localStorage.setItem('ame_user', JSON.stringify(currentUser));
+
+                        // Clean URL hash
+                        window.history.replaceState(null, null, window.location.pathname);
+
+                        // Show home screen
+                        showScreen('home');
+
+                        console.log('✅ Google OAuth login successful!');
+                    }
+                } catch (error) {
+                    console.error('OAuth error:', error);
+                    alert('Erro ao fazer login com Google. Tente novamente.');
+                    showScreen('auth');
+                }
+            }
+        }
+
+        // Call on page load
+        handleOAuthCallback();
+
         // Auth functions
         function showLogin() {
             showScreen('loginScreen');
