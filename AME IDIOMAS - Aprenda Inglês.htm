@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<!-- saved from url=(0163)https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/99a4710a79e420b76e8afb404feee026/d4e61fe7-1005-4229-a0cb-5b2ab003a990/canvas-app/index.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AME IDIOMAS - Aprenda Inglês</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #45009d;
+            --primary-dark: #350076;
+            --primary-light: #5a00c7;
+            --secondary: #00d4ff;
+            --success: #00c853;
+            --error: #ff1744;
+            --text-dark: #1a1a1a;
+            --text-light: #666;
+            --bg-light: #f5f5f5;
+            --white: #ffffff;
+            --border: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px var(--shadow);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #00bfe6;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #00a844;
+        }
+
+        .btn-error {
+            background: var(--error);
+        }
+
+        .btn-error:hover {
+            background: #d50032;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .auth-screen {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-card {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .menu-item {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .menu-item-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .menu-item-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .menu-item-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .word-list {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .word-item {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px var(--shadow);
+            transition: all 0.2s ease;
+        }
+
+        .word-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+
+        .word-info {
+            flex: 1;
+        }
+
+        .word-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .word-phonetic {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .audio-btn {
+            background: var(--secondary);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+
+        .flashcard-container {
+            perspective: 1000px;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            min-height: 400px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            min-height: 400px;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            border: 4px solid #8a2be2;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, var(--secondary) 0%, #00bfe6 100%);
+            color: var(--text-dark);
+            transform: rotateY(180deg);
+            border: 4px solid #8a2be2;
+        }
+
+        .flashcard-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .flashcard-word {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .flashcard-image {
+            width: 200px;
+            height: 200px;
+            background: var(--white);
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+        }
+
+        .image-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .image-option {
+            width: 100%;
+            aspect-ratio: 1;
+            background: var(--white);
+            border: 3px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            transition: all 0.3s ease;
+        }
+
+        .image-option:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .image-option.selected {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .image-option.wrong {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .phonetic-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .sentence-text {
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 20px 0;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .day-btn {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--white);
+            color: var(--text-dark);
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .day-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px var(--shadow);
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .day-btn.current {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .day-btn.completed {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .day-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .levels-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .level-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--white);
+            color: var(--text-dark);
+            box-shadow: 0 4px 12px var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .level-btn:hover:not(:disabled) {
+            transform: translateX(10px);
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .level-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .level-badge {
+            background: var(--primary);
+            color: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .gallery-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow);
+            perspective: 1000px;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .gallery-card-inner {
+            position: relative;
+            width: 100%;
+            min-height: 200px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .gallery-card.flipped .gallery-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .gallery-card-face {
+            position: absolute;
+            width: 100%;
+            backface-visibility: hidden;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .gallery-card-front {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+        }
+
+        .gallery-card-back {
+            background: linear-gradient(135deg, var(--secondary) 0%, #00bfe6 100%);
+            color: var(--text-dark);
+            transform: rotateY(180deg);
+        }
+
+        .back-btn {
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success) 0%, var(--primary) 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .success-message {
+            background: var(--success);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 20px 0;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-message {
+            background: var(--error);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 20px 0;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .days-grid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                gap: 10px;
+            }
+
+            .flashcard-word {
+                font-size: 2rem;
+            }
+
+            .image-options {
+                gap: 10px;
+            }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state-text {
+            font-size: 1.2rem;
+        }
+
+        .phonetic-keyboard {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .phonetic-key {
+            aspect-ratio: 1;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--white);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .phonetic-key:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+
+        .phonetic-key:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AME IDIOMAS</h1>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="auth-screen">
+            <div class="auth-card card">
+                <h2 class="card-title">Bem-vindo!</h2>
+                <div class="form-group">
+                    <label for="loginEmail">E-mail</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <button class="btn" style="width: 100%; margin-bottom: 15px;" onclick="login()">Entrar</button>
+                <button class="btn btn-outline" style="width: 100%;" onclick="showRegister()">Cadastrar</button>
+                
+                <div style="text-align: center; margin: 20px 0; color: var(--text-light);">ou</div>
+                
+                <button class="btn btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="loginWithGoogle()">
+                    <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                    </svg>
+                    Continuar com Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div id="registerScreen" class="screen">
+        <div class="auth-screen">
+            <div class="auth-card card">
+                <h2 class="card-title">Criar Conta</h2>
+                <div class="form-group">
+                    <label for="registerName">Nome</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" placeholder="••••••••">
+                </div>
+                <button class="btn" style="width: 100%; margin-bottom: 15px;" onclick="register()">Cadastrar</button>
+                <button class="btn btn-outline" style="width: 100%;" onclick="showLogin()">Já tenho conta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Screen -->
+    <div id="homeScreen" class="screen">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem;">Escolha uma opção</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="showComingSoon(&#39;Cursos&#39;)">
+                    <div class="menu-item-icon">📚</div>
+                    <div class="menu-item-title">Cursos</div>
+                    <div class="menu-item-desc">Em breve</div>
+                </div>
+                <div class="menu-item" onclick="showScreen(&#39;practiceScreen&#39;)">
+                    <div class="menu-item-icon">💪</div>
+                    <div class="menu-item-title">Praticar</div>
+                    <div class="menu-item-desc">Treine seu inglês</div>
+                </div>
+                <div class="menu-item" onclick="showScreen(&#39;aboutScreen&#39;)">
+                    <div class="menu-item-icon">👥</div>
+                    <div class="menu-item-title">Quem Somos</div>
+                    <div class="menu-item-desc">Conheça o AME</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Practice Screen -->
+    <div id="practiceScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="showScreen(&#39;homeScreen&#39;)">← Voltar</button>
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem;">Praticar</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="showScreen(&#39;phoneticScreen&#39;)">
+                    <div class="menu-item-icon">🔊</div>
+                    <div class="menu-item-title">Fonética</div>
+                    <div class="menu-item-desc">Ouça as 1.500 palavras</div>
+                </div>
+                <div class="menu-item" onclick="showScreen(&#39;flashcardsMenuScreen&#39;)">
+                    <div class="menu-item-icon">🎴</div>
+                    <div class="menu-item-title">Flashcards</div>
+                    <div class="menu-item-desc">Criar e praticar</div>
+                </div>
+                <div class="menu-item" onclick="showComingSoon(&#39;Tradutor&#39;)">
+                    <div class="menu-item-icon">🌐</div>
+                    <div class="menu-item-title">Tradutor</div>
+                    <div class="menu-item-desc">Em breve</div>
+                </div>
+                <div class="menu-item" onclick="showComingSoon(&#39;Quiz&#39;)">
+                    <div class="menu-item-icon">🎯</div>
+                    <div class="menu-item-title">Quiz</div>
+                    <div class="menu-item-desc">Em breve</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phonetic Screen -->
+    <div id="phoneticScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="showScreen(&#39;practiceScreen&#39;)">← Voltar</button>
+            <h2 class="card-title">Fonética - 1.500 Palavras</h2>
+            <input type="text" class="search-box" id="phoneticSearch" placeholder="🔍 Buscar palavra..." onkeyup="filterPhonetic()">
+            <div class="word-list" id="phoneticList"></div>
+        </div>
+    </div>
+
+    <!-- Flashcards Menu Screen -->
+    <div id="flashcardsMenuScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="showScreen(&#39;practiceScreen&#39;)">← Voltar</button>
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem;">Flashcards</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="statsCreated">0</div>
+                    <div class="stat-label">Criados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statsDominated">0</div>
+                    <div class="stat-label">Dominados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statsStreak">0</div>
+                    <div class="stat-label">Dias seguidos</div>
+                </div>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-item" onclick="startCreateFlashcards()">
+                    <div class="menu-item-icon">➕</div>
+                    <div class="menu-item-title">Criar Flashcards</div>
+                    <div class="menu-item-desc">Crie seus cartões</div>
+                </div>
+                <div class="menu-item" onclick="showScreen(&#39;memoryGameScreen&#39;)">
+                    <div class="menu-item-icon">🎮</div>
+                    <div class="menu-item-title">Memory Game</div>
+                    <div class="menu-item-desc">64 dias de prática</div>
+                </div>
+                <div class="menu-item" onclick="showScreen(&#39;dominatedScreen&#39;)">
+                    <div class="menu-item-icon">🏆</div>
+                    <div class="menu-item-title">Palavras Dominadas</div>
+                    <div class="menu-item-desc">Suas conquistas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Flashcard Screen -->
+    <div id="createFlashcardScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="showScreen(&#39;flashcardsMenuScreen&#39;)">← Voltar</button>
+            <h2 class="card-title">Criar Flashcard <span id="createProgress"></span></h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="createFlashcard">
+                    <!-- Front -->
+                    <div class="flashcard-face flashcard-front">
+                        <div class="flashcard-label">FRENTE</div>
+                        <div class="flashcard-word" id="createWord"></div>
+                        <button class="audio-btn" onclick="speakWord(currentCreateWord.word)">🔊</button>
+                        <div class="image-options" id="imageOptions"></div>
+                    </div>
+                    
+                    <!-- Back -->
+                    <div class="flashcard-face flashcard-back">
+                        <div class="flashcard-label">VERSO</div>
+                        <div class="phonetic-text" id="createPhonetic"></div>
+                        <input type="text" class="input-field" id="phoneticInput" placeholder="Digite a fonética">
+                        
+                        <!-- Phonetic Keyboard -->
+                        <div class="phonetic-keyboard" id="phoneticKeyboard"></div>
+                        
+                        <div class="sentence-text" id="createSentence"></div>
+                        <input type="text" class="input-field" id="sentenceInput" placeholder="Digite a frase">
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="toggleFlashcard()">Virar Cartão</button>
+                <button class="btn btn-success" onclick="validateFlashcard()">Validar</button>
+            </div>
+
+            <div id="validationMessage"></div>
+        </div>
+    </div>
+
+    <!-- Memory Game Screen -->
+    <div id="memoryGameScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="showScreen(&#39;flashcardsMenuScreen&#39;)">← Voltar</button>
+            <h2 class="card-title">Memory Game - 64 Dias</h2>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 20px;">
+                Dia Atual: <strong id="currentDayDisplay">1</strong>
+            </p>
+            <div class="days-grid" id="daysGrid"></div>
+        </div>
+    </div>
+
+    <!-- Day Levels Screen -->
+    <div id="dayLevelsScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="showScreen(&#39;memoryGameScreen&#39;)">← Voltar</button>
+            <h2 class="card-title">Dia <span id="selectedDayNumber"></span></h2>
+            <div class="levels-container" id="levelsContainer"></div>
+        </div>
+    </div>
+
+    <!-- Play Level Screen -->
+    <div id="playLevelScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="backToDayLevels()">← Voltar</button>
+            <h2 class="card-title">
+                Nível <span id="playingLevel"></span> - 
+                Carta <span id="currentCardIndex"></span>/<span id="totalCards"></span>
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="playFlashcard">
+                    <!-- Front -->
+                    <div class="flashcard-face flashcard-front">
+                        <div class="flashcard-word" id="playWord"></div>
+                        <div class="flashcard-image" id="playImage"></div>
+                        <button class="audio-btn" onclick="speakWord(currentPlayCard.word)">🔊</button>
+                    </div>
+                    
+                    <!-- Back -->
+                    <div class="flashcard-face flashcard-back">
+                        <div class="phonetic-text" id="playPhonetic"></div>
+                        <div class="sentence-text" id="playSentence"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="togglePlayFlashcard()">Ver Resposta</button>
+            </div>
+
+            <div class="btn-group" id="evaluationButtons" style="display: none;">
+                <button class="btn btn-error" id="btnWrong" onclick="evaluateCard(false)">❌ Errei</button>
+                <button class="btn btn-success" id="btnCorrect" onclick="evaluateCard(true)">✅ Acertei</button>
+            </div>
+
+            <div class="btn-group" id="nextCardButton" style="display: none;">
+                <button class="btn btn-secondary" onclick="goToNextCard()" style="width: 100%;">Próximo →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dominated Screen -->
+    <div id="dominatedScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="showScreen(&#39;flashcardsMenuScreen&#39;)">← Voltar</button>
+            <h2 class="card-title">🏆 Palavras Dominadas</h2>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 20px;">
+                Total: <strong id="dominatedCount">0</strong> palavras
+            </p>
+            <input type="text" class="search-box" id="dominatedSearch" placeholder="🔍 Buscar palavra..." onkeyup="filterDominated()">
+            <div class="gallery-grid" id="dominatedGallery"></div>
+            <div id="emptyDominated" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">🏆</div>
+                <div class="empty-state-text">Você ainda não dominou nenhuma palavra.<br>Continue praticando!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Screen -->
+    <div id="aboutScreen" class="screen">
+        <div class="container">
+            <button class="btn back-btn" onclick="showScreen(&#39;homeScreen&#39;)">← Voltar</button>
+            <div class="card">
+                <h2 class="card-title">Sobre o AME IDIOMAS</h2>
+                <p style="line-height: 1.8; color: var(--text-dark); font-size: 1.1rem;">
+                    O <strong>AME IDIOMAS</strong> é uma plataforma inovadora de aprendizado de inglês que utiliza 
+                    as mais modernas técnicas de memorização espaçada para ajudar você a dominar 1.500 palavras 
+                    essenciais do inglês.
+                </p>
+                <p style="line-height: 1.8; color: var(--text-dark); font-size: 1.1rem; margin-top: 20px;">
+                    Nossa metodologia é baseada em flashcards inteligentes e um sistema de revisão de 7 níveis 
+                    que garante que você nunca esqueça o que aprendeu. Com apenas 10 minutos por dia, você pode 
+                    transformar seu vocabulário em inglês!
+                </p>
+                <h3 style="margin-top: 30px; color: var(--primary);">Nossos Diferenciais:</h3>
+                <ul style="line-height: 2; color: var(--text-dark); font-size: 1.1rem; margin-left: 20px;">
+                    <li>✅ 1.500 palavras cuidadosamente selecionadas</li>
+                    <li>✅ Sistema de memorização espaçada com 7 níveis</li>
+                    <li>✅ Pronúncia com áudio de qualidade</li>
+                    <li>✅ Exercícios práticos diários</li>
+                    <li>✅ Acompanhamento de progresso detalhado</li>
+                    <li>✅ Interface intuitiva e amigável</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data structure
+        const wordsData = [{"id": 1, "word": "actor", "phonetic": "/ˈæk.tər/", "sentence": "Who is your favorite actor?", "week": "semana01"}, {"id": 2, "word": "adjective", "phonetic": "/ˈædʒ.ek.tɪv/", "sentence": "Use an adjective to describe your mother.", "week": "semana01"}, {"id": 3, "word": "adult", "phonetic": "/ˈæd.ʌlt/", "sentence": "An adult under US law is someone over 18 years old.", "week": "semana01"}, {"id": 4, "word": "afternoon", "phonetic": "/ˌæf·tərˈnun/", "sentence": "It was a sunny afternoon.", "week": "semana01"}, {"id": 5, "word": "air", "phonetic": "/er/", "sentence": "I went outside to get some fresh air.", "week": "semana01"}, {"id": 6, "word": "airport", "phonetic": "/ˈer.pɔːrt/", "sentence": "Please take me to the airport.", "week": "semana01"}, {"id": 7, "word": "alive", "phonetic": "/əˈlaɪv/", "sentence": "She is alive and well and living in Brazil.", "week": "semana01"}, {"id": 8, "word": "animal", "phonetic": "/ˈæn.ə.məl/", "sentence": "Some animals hunt at night.", "week": "semana01"}, {"id": 9, "word": "apartment", "phonetic": "/əˈpɑːrt.mənt/", "sentence": "I live in an apartment.", "week": "semana01"}, {"id": 10, "word": "apple", "phonetic": "/ˈæp.əl/", "sentence": "I like to eat apples.", "week": "semana01"}];
+
+        // Load full dataset
+        fetch('words_data.json')
+            .then(response => response.json())
+            .then(data => {
+                wordsData.length = 0;
+                wordsData.push(...data);
+                console.log(`✅ ${data.length} palavras carregadas!`);
+            })
+            .catch(error => {
+                console.log('Usando dados de exemplo');
+            });
+
+        // Global state
+        let currentUser = null;
+        let gameState = {
+            flashcards: [], // Created flashcards with progress
+            currentDay: 1,
+            createdCount: 0,
+            dominatedWords: [],
+            streak: 0,
+            lastPlayDate: null
+        };
+
+        let currentCreateWord = null;
+        let currentCreateIndex = 0;
+        let selectedImageIndex = null;
+        let currentPlayCard = null;
+        let currentPlayCards = [];
+        let currentPlayIndex = 0;
+        let currentPlayLevel = 1;
+        let currentPlayDay = 1;
+
+        // Days configuration based on the table
+        const daysConfig = {
+            1: [2, 1], 2: [3, 1], 3: [2, 1], 4: [4, 1], 5: [2, 1], 6: [3, 1], 7: [2, 1], 8: [1],
+            9: [2, 1], 10: [3, 1], 11: [2, 1], 12: [5, 1], 13: [4, 2, 1], 14: [3, 1], 15: [2, 1],
+            16: [2, 1], 17: [2, 1], 18: [3, 1], 19: [2, 1], 20: [4, 1], 21: [2, 1], 22: [3, 1],
+            23: [2, 1], 24: [6, 1], 25: [2, 1], 26: [3, 1], 27: [2, 1], 28: [5, 1], 29: [4, 2, 1],
+            30: [3, 1], 31: [2, 1], 32: [1], 33: [2, 1], 34: [3, 1], 35: [2, 1], 36: [4, 1],
+            37: [2, 1], 38: [3, 1], 39: [2, 1], 40: [1], 41: [2, 1], 42: [3, 1], 43: [2, 1],
+            44: [5, 1], 45: [4, 2, 1], 46: [3, 1], 47: [2, 1], 48: [1], 49: [2, 1], 50: [3, 1],
+            51: [2, 1], 52: [4, 1], 53: [2, 1], 54: [3, 1], 55: [2, 1], 56: [7, 1], 57: [2, 1],
+            58: [3, 1], 59: [6, 2, 1], 60: [5, 1], 61: [4, 2, 1], 62: [3, 1], 63: [2, 1], 64: [1]
+        };
+
+        // Initialize
+        loadGameState();
+
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://ybwifidmijdfbgexsebf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlid2lmaWRtaWpkZmJnZXhzZWJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzOTAxNjAsImV4cCI6MjA3ODk2NjE2MH0.IdNQJpCMv0L9c46K4pRlDsRwCT6lTtBpy4-agXNcOec';
+
+        // Simple Supabase Client
+        const supabase = {
+            auth: {
+                signUp: async ({ email, password, name }) => {
+                    const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY
+                        },
+                        body: JSON.stringify({
+                            email,
+                            password,
+                            data: { name }
+                        })
+                    });
+                    return await res.json();
+                },
+                signInWithPassword: async ({ email, password }) => {
+                    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+                    if (data.access_token) {
+                        localStorage.setItem('supabase_token', data.access_token);
+                        localStorage.setItem('supabase_user', JSON.stringify(data.user));
+                    }
+                    return data;
+                },
+                signInWithOAuth: ({ provider }) => {
+                    window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=${provider}&redirect_to=${window.location.origin}`;
+                },
+                signOut: async () => {
+                    const token = localStorage.getItem('supabase_token');
+                    if (token) {
+                        await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+                            method: 'POST',
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                    }
+                    localStorage.removeItem('supabase_token');
+                    localStorage.removeItem('supabase_user');
+                },
+                getSession: () => {
+                    const token = localStorage.getItem('supabase_token');
+                    const user = localStorage.getItem('supabase_user');
+                    return token ? { user: JSON.parse(user), token } : null;
+                }
+            },
+            from: (table) => ({
+                select: async (columns = '*') => {
+                    const token = localStorage.getItem('supabase_token');
+                    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=${columns}`, {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': token ? `Bearer ${token}` : ''
+                        }
+                    });
+                    return await res.json();
+                },
+                insert: async (data) => {
+                    const token = localStorage.getItem('supabase_token');
+                    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${token}`,
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    return await res.json();
+                },
+                update: async (data, filter) => {
+                    const token = localStorage.getItem('supabase_token');
+                    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${filter}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    return await res.json();
+                }
+            })
+        };
+
+        // Auth functions
+        function showLogin() {
+            showScreen('loginScreen');
+        }
+
+        function showRegister() {
+            showScreen('registerScreen');
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+            
+            const data = await supabase.auth.signInWithPassword({ email, password });
+            
+            if (data.error || !data.access_token) {
+                alert('Erro ao fazer login. Verifique suas credenciais.');
+                return;
+            }
+            
+            currentUser = data.user;
+            await loadUserData();
+            showScreen('homeScreen');
+        }
+
+        async function register() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (!name || !email || !password) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+            
+            const data = await supabase.auth.signUp({ email, password, name });
+            
+            if (data.error) {
+                alert('Erro ao criar conta: ' + data.error.message);
+                return;
+            }
+            
+            alert('Conta criada com sucesso! Faça login para continuar.');
+            showLogin();
+        }
+
+        function loginWithGoogle() {
+            supabase.auth.signInWithOAuth({ provider: 'google' });
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            currentUser = null;
+            showScreen('loginScreen');
+        }
+
+        async function loadUserData() {
+            if (!currentUser) return;
+            
+            // Carregar progresso
+            const progress = await supabase.from('user_progress').select('*');
+            if (progress && progress.length > 0) {
+                gameState.currentDay = progress[0].current_day;
+                gameState.streak = progress[0].streak;
+            }
+            
+            // Carregar flashcards
+            const flashcards = await supabase.from('flashcards').select('*');
+            if (flashcards) {
+                gameState.flashcards = flashcards;
+            }
+            
+            // Carregar dominadas
+            const dominated = await supabase.from('dominated_words').select('word_id');
+            if (dominated) {
+                gameState.dominatedWords = dominated.map(d => d.word_id);
+            }
+        }
+
+        // Navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            if (screenId === 'phoneticScreen') {
+                loadPhoneticList();
+            } else if (screenId === 'flashcardsMenuScreen') {
+                updateStats();
+            } else if (screenId === 'memoryGameScreen') {
+                loadDaysGrid();
+            } else if (screenId === 'dominatedScreen') {
+                loadDominatedGallery();
+            }
+        }
+
+        function showComingSoon(feature) {
+            alert(`${feature} estará disponível em breve! 🚀`);
+        }
+
+        // Phonetic List
+        function loadPhoneticList() {
+            const list = document.getElementById('phoneticList');
+            list.innerHTML = '';
+            
+            wordsData.forEach(word => {
+                const item = document.createElement('div');
+                item.className = 'word-item';
+                item.innerHTML = `
+                    <div class="word-info">
+                        <div class="word-text">${word.word}</div>
+                        <div class="word-phonetic">${word.phonetic}</div>
+                    </div>
+                    <button class="audio-btn" onclick="speakWord('${word.word}')">🔊</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function filterPhonetic() {
+            const search = document.getElementById('phoneticSearch').value.toLowerCase();
+            const items = document.querySelectorAll('#phoneticList .word-item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(search) ? 'flex' : 'none';
+            });
+        }
+
+        // Text to Speech
+        function speakWord(word) {
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+        }
+
+        // Create Flashcards
+        function startCreateFlashcards() {
+            // Find next word to create (within allowed 10 per day)
+            const createdIds = gameState.flashcards.map(f => f.id);
+            const dayStartIndex = (gameState.currentDay - 1) * 10;
+            const dayEndIndex = dayStartIndex + 10;
+            
+            // Filter words for current day
+            const todayWords = wordsData.filter(w => 
+                w.id > dayStartIndex && w.id <= dayEndIndex
+            );
+            
+            const nextWord = todayWords.find(w => !createdIds.includes(w.id));
+            
+            if (!nextWord) {
+                alert(`Você já criou os 10 flashcards do dia ${gameState.currentDay}! 🎉\nAvance para o próximo dia para criar mais.`);
+                return;
+            }
+            
+            currentCreateWord = nextWord;
+            currentCreateIndex = createdIds.length;
+            selectedImageIndex = null;
+            
+            showScreen('createFlashcardScreen');
+            loadCreateFlashcard();
+        }
+
+        function loadCreateFlashcard() {
+            document.getElementById('createProgress').textContent = 
+                `(${currentCreateIndex + 1}/${wordsData.length})`;
+            document.getElementById('createWord').textContent = currentCreateWord.word;
+            document.getElementById('createPhonetic').textContent = currentCreateWord.phonetic;
+            document.getElementById('createSentence').textContent = currentCreateWord.sentence;
+            document.getElementById('phoneticInput').value = '';
+            document.getElementById('sentenceInput').value = '';
+            document.getElementById('validationMessage').innerHTML = '';
+            
+            // Reset flashcard flip
+            document.getElementById('createFlashcard').classList.remove('flipped');
+            
+            // Load image options
+            loadImageOptions();
+            
+            // Load phonetic keyboard
+            loadPhoneticKeyboard();
+        }
+
+        function loadImageOptions() {
+            const container = document.getElementById('imageOptions');
+            container.innerHTML = '';
+            
+            // Get 2 random other words
+            const otherWords = wordsData.filter(w => w.id !== currentCreateWord.id);
+            const randomWords = [];
+            while (randomWords.length < 2) {
+                const random = otherWords[Math.floor(Math.random() * otherWords.length)];
+                if (!randomWords.includes(random)) {
+                    randomWords.push(random);
+                }
+            }
+            
+            // Mix with correct word
+            const allOptions = [currentCreateWord, ...randomWords].sort(() => Math.random() - 0.5);
+            selectedImageIndex = null;
+            
+            allOptions.forEach((word, index) => {
+                const option = document.createElement('div');
+                option.className = 'image-option';
+                option.textContent = getWordEmoji(word.word);
+                option.onclick = () => selectImage(index, word.id === currentCreateWord.id);
+                container.appendChild(option);
+            });
+        }
+
+        function selectImage(index, isCorrect) {
+            const options = document.querySelectorAll('.image-option');
+            options.forEach(o => o.classList.remove('selected', 'wrong'));
+            options[index].classList.add(isCorrect ? 'selected' : 'wrong');
+            selectedImageIndex = isCorrect ? index : -1;
+        }
+
+        function toggleFlashcard() {
+            document.getElementById('createFlashcard').classList.toggle('flipped');
+        }
+
+        function validateFlashcard() {
+            const phoneticInput = document.getElementById('phoneticInput').value.trim();
+            const sentenceInput = document.getElementById('sentenceInput').value.trim();
+            const messageDiv = document.getElementById('validationMessage');
+            
+            if (selectedImageIndex === null || selectedImageIndex === -1) {
+                messageDiv.innerHTML = '<div class="error-message">❌ Selecione a imagem correta!</div>';
+                return;
+            }
+            
+            if (!phoneticInput || !sentenceInput) {
+                messageDiv.innerHTML = '<div class="error-message">❌ Preencha todos os campos!</div>';
+                return;
+            }
+            
+            const phoneticCorrect = phoneticInput.toLowerCase().includes(currentCreateWord.phonetic.toLowerCase().replace(/[\/\s]/g, ''));
+            const sentenceCorrect = sentenceInput.toLowerCase().trim() === currentCreateWord.sentence.toLowerCase().trim();
+            
+            if (phoneticCorrect && sentenceCorrect) {
+                // Success!
+                messageDiv.innerHTML = `
+                    <div class="success-message">✅ Flashcard criado com sucesso!</div>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="goToNextFlashcard()">
+                        Próximo →
+                    </button>
+                `;
+                
+                // Add to game state
+                gameState.flashcards.push({
+                    id: currentCreateWord.id,
+                    level: 1,
+                    lastReview: null,
+                    nextReview: gameState.currentDay
+                });
+                gameState.createdCount++;
+                saveGameState();
+            } else {
+                let errors = [];
+                if (!phoneticCorrect) errors.push('fonética');
+                if (!sentenceCorrect) errors.push('frase');
+                messageDiv.innerHTML = `<div class="error-message">❌ Corrija: ${errors.join(' e ')}</div>`;
+            }
+        }
+
+        // Memory Game
+        function loadDaysGrid() {
+            const grid = document.getElementById('daysGrid');
+            const currentDay = document.getElementById('currentDayDisplay');
+            grid.innerHTML = '';
+            currentDay.textContent = gameState.currentDay;
+            
+            for (let day = 1; day <= 64; day++) {
+                const btn = document.createElement('button');
+                btn.className = 'day-btn';
+                btn.textContent = `Dia ${day}`;
+                
+                if (day === gameState.currentDay) {
+                    btn.classList.add('current');
+                } else if (day < gameState.currentDay) {
+                    btn.classList.add('completed');
+                } else {
+                    btn.disabled = true;
+                }
+                
+                btn.onclick = () => showDayLevels(day);
+                grid.appendChild(btn);
+            }
+        }
+
+        function showDayLevels(day) {
+            currentPlayDay = day;
+            const levels = daysConfig[day] || [1];
+            const container = document.getElementById('levelsContainer');
+            document.getElementById('selectedDayNumber').textContent = day;
+            
+            container.innerHTML = '';
+            
+            levels.forEach(level => {
+                const cards = getCardsForLevel(level, day);
+                const allCardsInLevel = getAllCardsForLevel(level);
+                const canPlay = canPlayLevel(level, day);
+                const btn = document.createElement('button');
+                btn.className = 'level-btn';
+                
+                let statusText = '';
+                if (level === 1 && !canPlay) {
+                    statusText = ' (Crie 10 flashcards primeiro)';
+                } else if (level > 1 && !canPlay) {
+                    statusText = ` (Complete nível ${level - 1} primeiro)`;
+                }
+                
+                // Show total cards in level + cards for today
+                const infoText = cards.length > 0 ? 
+                    `${cards.length} para hoje` : 
+                    `${allCardsInLevel.length} no nível`;
+                
+                btn.innerHTML = `
+                    <span>Nível ${level}${statusText}</span>
+                    <span class="level-badge">${infoText}</span>
+                `;
+                
+                if (cards.length === 0 || !canPlay) {
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => startPlayLevel(level, cards);
+                }
+                
+                container.appendChild(btn);
+            });
+            
+            showScreen('dayLevelsScreen');
+        }
+
+        function getCardsForLevel(level, day) {
+            // Get cards at this level that need review today AND haven't been reviewed yet today
+            return gameState.flashcards.filter(card => {
+                return card.level === level && 
+                       card.nextReview <= day && 
+                       card.lastReview !== day;
+            });
+        }
+        
+        function getAllCardsForLevel(level) {
+            // Get all cards currently at this level
+            return gameState.flashcards.filter(card => card.level === level);
+        }
+
+        function getCardsCreatedForDay(day) {
+            // Get cards created on this day (first 10 cards per day)
+            const startIndex = (day - 1) * 10;
+            const endIndex = startIndex + 10;
+            return gameState.flashcards.filter(card => 
+                card.id >= startIndex + 1 && card.id <= endIndex
+            ).length;
+        }
+
+        function canPlayLevel(level, day) {
+            // Level 1: needs 10 cards created for today
+            if (level === 1) {
+                return getCardsCreatedForDay(day) >= 10;
+            }
+            
+            // Other levels: need to have completed previous level
+            const prevLevelCards = gameState.flashcards.filter(card => 
+                card.level === level - 1 && card.nextReview === day
+            );
+            
+            // If no cards in previous level for today, level is accessible
+            return prevLevelCards.length === 0;
+        }
+
+        function startPlayLevel(level, cards) {
+            currentPlayLevel = level;
+            currentPlayCards = cards;
+            currentPlayIndex = 0;
+            
+            showScreen('playLevelScreen');
+            loadPlayCard();
+        }
+
+        function loadPlayCard() {
+            const card = currentPlayCards[currentPlayIndex];
+            currentPlayCard = wordsData.find(w => w.id === card.id);
+            
+            document.getElementById('playingLevel').textContent = currentPlayLevel;
+            document.getElementById('currentCardIndex').textContent = currentPlayIndex + 1;
+            document.getElementById('totalCards').textContent = currentPlayCards.length;
+            document.getElementById('playWord').textContent = currentPlayCard.word;
+            document.getElementById('playImage').textContent = getWordEmoji(currentPlayCard.word);
+            document.getElementById('playPhonetic').textContent = currentPlayCard.phonetic;
+            document.getElementById('playSentence').textContent = currentPlayCard.sentence;
+            
+            // Reset state
+            document.getElementById('playFlashcard').classList.remove('flipped');
+            document.getElementById('evaluationButtons').style.display = 'none';
+            document.getElementById('nextCardButton').style.display = 'none';
+            document.getElementById('btnWrong').disabled = false;
+            document.getElementById('btnCorrect').disabled = false;
+        }
+
+        function togglePlayFlashcard() {
+            const flashcard = document.getElementById('playFlashcard');
+            flashcard.classList.toggle('flipped');
+            
+            if (flashcard.classList.contains('flipped')) {
+                document.getElementById('evaluationButtons').style.display = 'flex';
+            }
+        }
+
+        function goToNextFlashcard() {
+            startCreateFlashcards();
+        }
+
+        function evaluateCard(correct) {
+            const cardIndex = gameState.flashcards.findIndex(c => c.id === currentPlayCard.id);
+            
+            if (correct) {
+                // Move to next level
+                if (gameState.flashcards[cardIndex].level < 7) {
+                    gameState.flashcards[cardIndex].level++;
+                    gameState.flashcards[cardIndex].nextReview = calculateNextReview(
+                        gameState.currentDay, 
+                        gameState.flashcards[cardIndex].level
+                    );
+                } else if (gameState.flashcards[cardIndex].level === 7) {
+                    // Dominated! Only after completing level 7
+                    const dominated = gameState.flashcards.splice(cardIndex, 1)[0];
+                    gameState.dominatedWords.push(dominated.id);
+                }
+            } else {
+                // Back to level 1
+                gameState.flashcards[cardIndex].level = 1;
+                gameState.flashcards[cardIndex].nextReview = gameState.currentDay + 1;
+            }
+            
+            gameState.flashcards[cardIndex].lastReview = gameState.currentDay;
+            saveGameState();
+            
+            // Automatically advance to next card after 500ms
+            setTimeout(() => {
+                goToNextCard();
+            }, 500);
+        }
+
+        function goToNextCard() {
+            // Move to next card
+            currentPlayIndex++;
+            
+            if (currentPlayIndex >= currentPlayCards.length) {
+                // Level completed
+                alert(`Parabéns! Você completou o Nível ${currentPlayLevel}! 🎉`);
+                showDayLevels(currentPlayDay);
+            } else {
+                loadPlayCard();
+            }
+        }
+
+        function calculateNextReview(currentDay, level) {
+            const intervals = [0, 1, 2, 3, 5, 8, 14]; // Days to add for each level
+            return currentDay + intervals[level - 1];
+        }
+
+        function backToDayLevels() {
+            showDayLevels(currentPlayDay);
+        }
+
+        // Dominated Gallery
+        function loadDominatedGallery() {
+            const gallery = document.getElementById('dominatedGallery');
+            const count = document.getElementById('dominatedCount');
+            const empty = document.getElementById('emptyDominated');
+            
+            gallery.innerHTML = '';
+            count.textContent = gameState.dominatedWords.length;
+            
+            if (gameState.dominatedWords.length === 0) {
+                empty.style.display = 'block';
+                gallery.style.display = 'none';
+                return;
+            }
+            
+            empty.style.display = 'none';
+            gallery.style.display = 'grid';
+            
+            gameState.dominatedWords.forEach(wordId => {
+                const word = wordsData.find(w => w.id === wordId);
+                if (!word) return;
+                
+                const card = document.createElement('div');
+                card.className = 'gallery-card';
+                card.onclick = () => card.classList.toggle('flipped');
+                card.innerHTML = `
+                    <div class="gallery-card-inner">
+                        <div class="gallery-card-face gallery-card-front">
+                            <div style="font-size: 3rem; margin-bottom: 10px;">${getWordEmoji(word.word)}</div>
+                            <div style="font-size: 1.5rem; font-weight: 600;">${word.word}</div>
+                        </div>
+                        <div class="gallery-card-face gallery-card-back">
+                            <div style="font-size: 1.2rem; margin-bottom: 10px;">${word.phonetic}</div>
+                            <div style="font-size: 0.9rem;">${word.sentence}</div>
+                        </div>
+                    </div>
+                `;
+                gallery.appendChild(card);
+            });
+        }
+
+        function filterDominated() {
+            const search = document.getElementById('dominatedSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.gallery-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(search) ? 'block' : 'none';
+            });
+        }
+
+        // Stats
+        function updateStats() {
+            document.getElementById('statsCreated').textContent = gameState.flashcards.length;
+            document.getElementById('statsDominated').textContent = gameState.dominatedWords.length;
+            document.getElementById('statsStreak').textContent = gameState.streak;
+        }
+
+        // Helper functions
+        function getWordEmoji(word) {
+            const emojis = {
+                actor: '🎭', adjective: '📝', adult: '👨', afternoon: '🌅', air: '💨',
+                airport: '✈️', alive: '❤️', animal: '🐾', apartment: '🏢', apple: '🍎'
+            };
+            return emojis[word.toLowerCase()] || '📚';
+        }
+
+        async function saveGameState() {
+            // Save to localStorage as backup
+            localStorage.setItem('ameIdiomasState', JSON.stringify(gameState));
+            
+            // Save to Supabase if authenticated
+            const token = localStorage.getItem('supabase_token');
+            if (!token || !currentUser) return;
+            
+            try {
+                // Save progress
+                await supabase.from('user_progress').update({
+                    current_day: gameState.currentDay,
+                    streak: gameState.streak,
+                    last_play_date: new Date().toISOString().split('T')[0]
+                }, `user_id=eq.${currentUser.id}`);
+            } catch (error) {
+                console.error('Error saving to Supabase:', error);
+            }
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('ameIdiomasState');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+        }
+
+        // Check session on load
+        window.addEventListener('load', async () => {
+            const session = supabase.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                await loadUserData();
+                showScreen('homeScreen');
+            }
+        });
+
+        // Phonetic Keyboard
+        function loadPhoneticKeyboard() {
+            const keyboard = document.getElementById('phoneticKeyboard');
+            const symbols = [
+                'ə', 'ɪ', 'i', 'ʊ', 'u', 'e', 'ɜ', 'ɔ',
+                'æ', 'ʌ', 'ɑ', 'ɒ', 'eɪ', 'aɪ', 'ɔɪ', 'aʊ',
+                'oʊ', 'ɪə', 'eə', 'ʊə', 'p', 'b', 't', 'd',
+                'k', 'g', 'f', 'v', 'θ', 'ð', 's', 'z',
+                'ʃ', 'ʒ', 'h', 'm', 'n', 'ŋ', 'l', 'r',
+                'j', 'w', 'ˈ', 'ˌ', '/', ':', '.', '·'
+            ];
+            
+            keyboard.innerHTML = '';
+            symbols.forEach(symbol => {
+                const key = document.createElement('button');
+                key.className = 'phonetic-key';
+                key.textContent = symbol;
+                key.type = 'button';
+                key.onclick = () => insertPhoneticSymbol(symbol);
+                keyboard.appendChild(key);
+            });
+        }
+
+        function insertPhoneticSymbol(symbol) {
+            const input = document.getElementById('phoneticInput');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            
+            input.value = text.substring(0, start) + symbol + text.substring(end);
+            input.focus();
+            input.selectionStart = input.selectionEnd = start + symbol.length;
+        }
+    </script>
+
+
+</body></html>
